@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Glaucoma MCQ Exam</title>
+<style>
+  :root{
+    --bg:#eef4fb;
+    --card:#ffffff;
+    --primary:#1769aa;
+    --primary2:#0d47a1;
+    --text:#17212b;
+    --muted:#66788a;
+    --ok:#178447;
+    --bad:#c62828;
+    --border:#d9e4ef;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Tahoma,Arial,sans-serif;
+    background:linear-gradient(135deg,#eaf3ff,#f8fbff);
+    color:var(--text);
+    min-height:100vh;
+  }
+  .wrap{max-width:900px;margin:auto;padding:20px}
+  .header{
+    background:linear-gradient(135deg,var(--primary2),var(--primary));
+    color:white;border-radius:22px;padding:24px;
+    box-shadow:0 12px 30px rgba(13,71,161,.20);
+    margin-bottom:18px;
+  }
+  .header h1{margin:0 0 8px;font-size:28px}
+  .header p{margin:0;opacity:.92;line-height:1.7}
+  .topbar{
+    display:flex;gap:12px;align-items:center;justify-content:space-between;
+    background:var(--card);border:1px solid var(--border);border-radius:16px;
+    padding:12px 15px;margin-bottom:18px;position:sticky;top:8px;z-index:10;
+    box-shadow:0 6px 18px rgba(37,64,97,.08);
+  }
+  .progress-wrap{flex:1;height:10px;background:#e5edf5;border-radius:20px;overflow:hidden}
+  .progress{height:100%;width:0;background:linear-gradient(90deg,#1e88e5,#43a047);transition:.3s}
+  .counter{font-weight:700;color:var(--primary2);white-space:nowrap}
+  .question{
+    background:var(--card);border:1px solid var(--border);border-radius:18px;
+    padding:20px;margin-bottom:16px;box-shadow:0 8px 22px rgba(37,64,97,.07);
+  }
+  .qtitle{font-size:18px;font-weight:800;line-height:1.7;margin-bottom:13px}
+  .num{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:34px;height:34px;border-radius:50%;background:#e3f2fd;color:var(--primary2);
+    margin-left:8px;font-weight:900;
+  }
+  .option{
+    display:block;border:2px solid #e2e9f0;border-radius:13px;
+    padding:12px 14px;margin:9px 0;cursor:pointer;transition:.18s;
+    background:#fbfdff;line-height:1.55;
+  }
+  .option:hover{border-color:#90caf9;background:#f2f8ff}
+  .option input{margin-left:8px;transform:scale(1.15)}
+  .option.correct{border-color:var(--ok);background:#e9f8ef;color:#0d5d31}
+  .option.wrong{border-color:var(--bad);background:#fff0f0;color:#8e1717}
+  .explanation{
+    display:none;margin-top:12px;padding:11px 13px;border-radius:12px;
+    background:#f3f7fb;border-right:4px solid var(--primary);line-height:1.7;
+    color:#34495e;
+  }
+  .actions{
+    display:flex;gap:12px;justify-content:center;flex-wrap:wrap;
+    margin:24px 0 40px;
+  }
+  button{
+    border:0;border-radius:14px;padding:13px 22px;font-size:16px;font-weight:800;
+    cursor:pointer;transition:.2s;
+  }
+  #submit{background:linear-gradient(135deg,#1976d2,#0d47a1);color:white}
+  #reset{background:#e8eef5;color:#24384d}
+  button:hover{transform:translateY(-1px)}
+  #result{
+    display:none;background:white;border-radius:20px;padding:24px;
+    margin:20px 0;border:1px solid var(--border);text-align:center;
+    box-shadow:0 10px 28px rgba(37,64,97,.12);
+  }
+  .score{font-size:42px;font-weight:900;color:var(--primary2);margin:8px}
+  .grade{font-size:20px;font-weight:800}
+  .small{color:var(--muted);font-size:14px}
+  @media(max-width:600px){
+    .wrap{padding:12px}
+    .header h1{font-size:23px}
+    .qtitle{font-size:16px}
+    .question{padding:15px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="header">
+    <h1>👁️ Glaucoma MCQ Exam</h1>
+    <p>اختبار شامل: Congenital glaucoma (Buphthalmos)، Primary closed-angle glaucoma، Primary open-angle glaucoma، Visual field changes والعلاج.</p>
+  </section>
+
+  <div class="topbar">
+    <div class="counter" id="counter">تمت الإجابة: 0 / 25</div>
+    <div class="progress-wrap"><div class="progress" id="progress"></div></div>
+  </div>
+
+  <form id="quiz"></form>
+
+  <div class="actions">
+    <button type="button" id="submit">إنهاء الاختبار وإظهار النتيجة</button>
+    <button type="button" id="reset">إعادة الاختبار</button>
+  </div>
+
+  <div id="result">
+    <div class="small">نتيجتك النهائية</div>
+    <div class="score" id="score"></div>
+    <div class="grade" id="grade"></div>
+    <p class="small">راجع الإجابات الملوّنة والشرح الموجود أسفل كل سؤال.</p>
+  </div>
+</div>
+
+<script>
+const questions = [
+{
+q:"Buphthalmos يحدث غالبًا عندما يرتفع ضغط العين قبل عمر:",
+o:["سنة واحدة فقط","3 سنوات","10 سنوات","بعد البلوغ"],
+a:1,
+e:"قبل عمر 3 سنوات تكون الصلبة والقرنية مرنتين، لذلك يؤدي ارتفاع IOP إلى تمدد كرة العين."
+},
+{
+q:"السبب الأساسي في Primary congenital glaucoma هو:",
+o:["Pupillary block","Trabecular dysgenesis","Retinal detachment","Lens opacity"],
+a:1,
+e:"Trabecular dysgenesis يسبب مقاومة في تصريف aqueous humor وارتفاع ضغط العين."
+},
+{
+q:"أيّ مما يلي يُعد من أسباب Secondary congenital glaucoma الخطيرة المذكورة؟",
+o:["Retinoblastoma","Simple myopia","Conjunctivitis","Dry eye"],
+a:0,
+e:"يجب استبعاد retinoblastoma عند تقييم الطفل، خصوصًا مع عتامة الوسط البصري."
+},
+{
+q:"الثلاثية المبكرة الكلاسيكية في congenital glaucoma هي:",
+o:["Pain, redness, vomiting","Blepharospasm, lacrimation, photophobia","Ptosis, diplopia, proptosis","Miosis, itching, discharge"],
+a:1,
+e:"BLP: Blepharospasm + Lacrimation + Photophobia."
+},
+{
+q:"Haab’s striae هي:",
+o:["Vertical retinal tears","Horizontal healed breaks in Descemet’s membrane","Corneal epithelial ulcer","Iris adhesions"],
+a:1,
+e:"تمدد القرنية يؤدي إلى تمزقات أفقية في Descemet’s membrane تسمى Haab’s striae."
+},
+{
+q:"في Buphthalmos تكون الحجرة الأمامية غالبًا:",
+o:["Shallow","Deep","Absent","Filled with blood"],
+a:1,
+e:"تمدد كرة العين يسبب deep anterior chamber."
+},
+{
+q:"في congenital glaucoma، إذا كانت القرنية clear وقطرها أقل من 13 mm وIOP أقل من 30 mmHg، الإجراء المفضل هو:",
+o:["Trabeculectomy","Goniotomy","YAG iridotomy","Enucleation"],
+a:1,
+e:"Clear cornea تسمح برؤية الزاوية بواسطة goniolens؛ لذلك نختار goniotomy."
+},
+{
+q:"في congenital glaucoma مع hazy cornea، قطر أكبر من 13 mm وIOP أعلى من 30 mmHg، الإجراء المفضل هو:",
+o:["Trabeculotomy","Goniotomy","Laser trabeculoplasty","Cycloplegia"],
+a:0,
+e:"عند عتامة القرنية لا يمكن رؤية الزاوية جيدًا، لذلك يتم فتح Schlemm’s canal من الخارج بـ trabeculotomy."
+},
+{
+q:"أخطر مضاعفات Buphthalmos هي:",
+o:["Simple astigmatism","Glaucomatous optic atrophy","Conjunctival pigmentation","Temporary photophobia"],
+a:1,
+e:"الضغط المزمن قد يؤدي لتلف غير قابل للعكس في العصب البصري ثم blindness."
+},
+{
+q:"Unilateral congenital glaucoma قد يؤدي إلى:",
+o:["Nystagmus فقط","Concomitant squint and amblyopia","Bilateral cataract دائمًا","Papilledema"],
+a:1,
+e:"الاختلاف بين العينين قد يسبب amblyopia مع concomitant squint، بينما bilateral disease قد يسبب nystagmus."
+},
+{
+q:"Primary angle-closure glaucoma يتميز بأن الزاوية تُغلق بواسطة:",
+o:["Peripheral iris","Lens capsule","Corneal epithelium","Vitreous base"],
+a:0,
+e:"القزحية الطرفية تتحرك للأمام وتغلق trabecular meshwork."
+},
+{
+q:"أهم آلية شائعة في Primary angle closure هي:",
+o:["Trabecular sclerosis","Pupillary block between iris and lens","Retinal ischemia","Ciliary muscle paralysis"],
+a:1,
+e:"Pupillary block يؤدي إلى تجمع السائل خلف القزحية وتكوّن iris bombe."
+},
+{
+q:"أيّ عامل يُهيئ لـ Primary angle-closure glaucoma؟",
+o:["High axial myopia","Hypermetropia with small eye and shallow AC","Large cornea","Aphakia"],
+a:1,
+e:"العين الصغيرة hypermetropic تكون ذات anterior chamber ضحلة وزاوية ضيقة."
+},
+{
+q:"أيّ مما يلي قد يحرّض نوبة acute angle closure؟",
+o:["Pupil dilation in darkness","Bright light causing miosis","Sleeping with eyes closed فقط","Topical antibiotic"],
+a:0,
+e:"Mid-dilation في الظلام أو بسبب mydriatics قد تزيد pupillary block وتغلق الزاوية."
+},
+{
+q:"الحدقة في acute congestive angle-closure glaucoma تكون غالبًا:",
+o:["Pinpoint and reactive","Semi-dilated, vertically oval and fixed","Fully dilated and reactive","Irregular بسبب posterior synechiae فقط"],
+a:1,
+e:"ارتفاع الضغط يسبب ischemia of iris sphincter فتكون الحدقة semi-dilated وغير متفاعلة."
+},
+{
+q:"أيّ دواء يُعطى فقط بعد خفض IOP في acute angle closure بسبب sphincter ischemia؟",
+o:["Timolol","Acetazolamide","Pilocarpine","Mannitol"],
+a:2,
+e:"Pilocarpine قد لا يعمل أثناء الارتفاع الشديد جدًا للضغط، لذلك يُعطى بعد بدء خفض IOP."
+},
+{
+q:"إذا كان PAS أقل من 50%، العلاج الجراحي المذكور هو:",
+o:["YAG peripheral iridotomy","Subsceral trabeculectomy مباشرة","Vitrectomy","Corneal graft"],
+a:0,
+e:"مع PAS محدود، إزالة pupillary block بـ YAG iridotomy قد تكون كافية."
+},
+{
+q:"إذا كان PAS أكثر من 50%، الخيار المذكور هو:",
+o:["Observation only","Subsceral trabeculectomy","Pilocarpine وحده مدى الحياة","Laser trabeculoplasty"],
+a:1,
+e:"PAS الواسع يعني إغلاقًا ليفيًا دائمًا، ولذلك يحتاج filtration surgery مثل subscleral trabeculectomy."
+},
+{
+q:"Primary open-angle glaucoma يُسمى أيضًا:",
+o:["Acute congestive glaucoma","Chronic simple glaucoma","Congenital glaucoma","Phacolytic glaucoma"],
+a:1,
+e:"POAG مرض مزمن تدريجي ويُعرف باسم chronic simple/compensated glaucoma."
+},
+{
+q:"الآلية المرضية الأساسية في POAG هي:",
+o:["Pupillary block","Trabecular sclerosis causing decreased aqueous outflow","Lens dislocation","Excess tear production"],
+a:1,
+e:"الزاوية تبقى مفتوحة لكن trabecular outflow resistance تزداد."
+},
+{
+q:"أفضل وصف مبكر لـ POAG هو:",
+o:["Severe painful red eye","Usually asymptomatic and found on routine examination","Sudden total blindness","Marked photophobia in every case"],
+a:1,
+e:"يسرق الرؤية تدريجيًا وغالبًا يُكتشف في الفحص الروتيني."
+},
+{
+q:"لماذا يُستخدم OCT في glaucoma؟",
+o:["لقياس axial length فقط","لقياس RNFL/NFL thickness والكشف المبكر قبل field defects","لتشخيص cataract","لقياس tear film"],
+a:1,
+e:"OCT يقيس retinal nerve fiber layer ويكشف structural damage قبل ظهور عيوب واضحة بالمجال البصري."
+},
+{
+q:"أول ألياف تتأثر غالبًا في glaucomatous field damage هي:",
+o:["Papillomacular bundle","Temporal arcuate fibers","Optic chiasm fibers","Nasal retinal fibers فقط"],
+a:1,
+e:"Temporal arcuate fibers هي الأكثر ازدحامًا والأكثر عرضة للتلف المبكر."
+},
+{
+q:"أيّ ترتيب يمثل تطور field defects في POAG بشكل صحيح؟",
+o:["Tubular field ثم paracentral scotoma","Paracentral nasal scotoma ثم Seidel ثم arcuate scotoma","Central scotoma ثم hemianopia","Bitemporal hemianopia ثم tunnel vision"],
+a:1,
+e:"التغيرات المبكرة تشمل paracentral nasal scotoma ثم Seidel ثم Bjerrum arcuate scotoma."
+},
+{
+q:"العلاج الدوائي الذي يزيد uveoscleral outflow ويُعطى غالبًا مرة يوميًا هو:",
+o:["Timolol","Latanoprost","Acetazolamide","Pilocarpine"],
+a:1,
+e:"Prostaglandin analogues مثل latanoprost تزيد uveoscleral drainage وغالبًا تستخدم once daily."
+}
+];
+
+const quiz = document.getElementById("quiz");
+questions.forEach((item,i)=>{
+  const div=document.createElement("section");
+  div.className="question";
+  div.dataset.index=i;
+  div.innerHTML=`
+    <div class="qtitle"><span class="num">${i+1}</span>${item.q}</div>
+    <div class="opts">
+      ${item.o.map((x,j)=>`
+        <label class="option">
+          <input type="radio" name="q${i}" value="${j}">
+          <span>${String.fromCharCode(65+j)}. ${x}</span>
+        </label>`).join("")}
+    </div>
+    <div class="explanation"><strong>التفسير:</strong> ${item.e}</div>`;
+  quiz.appendChild(div);
+});
+
+function updateProgress(){
+  let answered=0;
+  questions.forEach((_,i)=>{
+    if(document.querySelector(`input[name="q${i}"]:checked`)) answered++;
+  });
+  document.getElementById("counter").textContent=`تمت الإجابة: ${answered} / ${questions.length}`;
+  document.getElementById("progress").style.width=(answered/questions.length*100)+"%";
+}
+quiz.addEventListener("change",updateProgress);
+
+document.getElementById("submit").addEventListener("click",()=>{
+  let score=0;
+  questions.forEach((item,i)=>{
+    const sec=document.querySelector(`.question[data-index="${i}"]`);
+    const labels=sec.querySelectorAll(".option");
+    labels.forEach(l=>l.classList.remove("correct","wrong"));
+    const chosen=document.querySelector(`input[name="q${i}"]:checked`);
+    labels[item.a].classList.add("correct");
+    if(chosen){
+      const val=Number(chosen.value);
+      if(val===item.a) score++;
+      else labels[val].classList.add("wrong");
+    }
+    sec.querySelector(".explanation").style.display="block";
+  });
+  const percent=Math.round(score/questions.length*100);
+  document.getElementById("score").textContent=`${score} / ${questions.length} (${percent}%)`;
+  let grade="";
+  if(percent>=90) grade="ممتاز جدًا 🌟";
+  else if(percent>=80) grade="ممتاز 👏";
+  else if(percent>=70) grade="جيد جدًا 👍";
+  else if(percent>=60) grade="جيد، لكن راجع النقاط المهمة 📚";
+  else grade="تحتاج مراجعة وتركيز أكثر 💪";
+  document.getElementById("grade").textContent=grade;
+  document.getElementById("result").style.display="block";
+  document.getElementById("result").scrollIntoView({behavior:"smooth"});
+});
+
+document.getElementById("reset").addEventListener("click",()=>{
+  quiz.reset();
+  document.querySelectorAll(".option").forEach(x=>x.classList.remove("correct","wrong"));
+  document.querySelectorAll(".explanation").forEach(x=>x.style.display="none");
+  document.getElementById("result").style.display="none";
+  updateProgress();
+  window.scrollTo({top:0,behavior:"smooth"});
+});
+</script>
+</body>
+</html>
